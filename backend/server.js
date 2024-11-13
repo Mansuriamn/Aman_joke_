@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const mysql = require('mysql2/promise');
+const mysql = require('mysql');
 
 dotenv.config();
 
@@ -35,9 +35,13 @@ app.get('/post', async (req, res, next) => {
   try {
     const [results] = await pool.query('SELECT * FROM jokes');
 
-    // Set cache headers
-    res.set('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
-    res.json(results);
+    if (results.length === 0) {
+      res.status(404).json({ message: 'No data available' });
+    } else {
+      // Set cache headers
+      res.set('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
+      res.json(results);
+    }
   } catch (error) {
     next(error);
   }
