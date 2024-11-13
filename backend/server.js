@@ -34,7 +34,7 @@ const handleDatabaseError = (err, req, res, next) => {
 app.get('/post', async (req, res, next) => {
   try {
     const [results] = await pool.query('SELECT * FROM jokes');
-
+console.log([results]);
     if (results.length === 0) {
       res.status(404).json({ message: 'No data available' });
     } else {
